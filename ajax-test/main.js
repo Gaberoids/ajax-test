@@ -80,7 +80,143 @@
 
 
 
+// showing  only the values of the properties
+// const baseURL = "https://ci-swapi.herokuapp.com/api/";
 
+// function getData(type, cb) {
+//     var xhr = new XMLHttpRequest();
+
+//     xhr.open("GET", baseURL + type + "/");
+//     xhr.send();
+
+//     xhr.onreadystatechange = function () {
+//         if (this.readyState == 4 && this.status == 200) {
+//             cb(JSON.parse(this.responseText)); // this line is running the function because lines 69 or 77
+//         };
+//     };
+// };
+
+// function writeToDocument(type) {
+//     var el = document.getElementById("data");
+//     el.innerHTML= ""; //this clear the content in the html everytime a button is pressed. If not, the press of a button would add data to the page forever and never erase data.
+//     getData(type, function(data){
+//         //console.dir(data); //to see the data in a good format on the console. See the "results" in the console
+//         //document.getElementById("data").innerHTML = data.results; //data.results see the console for result thanks to line 101. Not the "results" in the console. here we print the results that we found on console
+
+//         data = data.results;
+//         data.forEach(function(item){
+//             el.innerHTML += "<p>"+ item.name + "</p>"; //item is the object - .name is a property of the object - object.property = "value". value comes from
+
+//         })
+//     })
+// }
+
+
+
+
+
+
+// // showing the keys and values on the html page Part 1. This shows only the Keys
+// const baseURL = "https://ci-swapi.herokuapp.com/api/";
+
+// function getData(type, cb) {
+//     var xhr = new XMLHttpRequest();
+
+//     xhr.open("GET", baseURL + type + "/");
+//     xhr.send();
+
+//     xhr.onreadystatechange = function () {
+//         if (this.readyState == 4 && this.status == 200) {
+//             cb(JSON.parse(this.responseText)); // this line is running the function because lines 69 or 77
+//         };
+//     };
+// };
+
+// function getTableHeaders(obj) {
+//     var tableHeaders = [];
+
+//     Object.keys(obj).forEach(function(key) {
+//         tableHeaders.push(`<td>${key}</td>`);
+//     });
+//     return `<tr>${tableHeaders}</tr>`;
+// }
+
+// function writeToDocument(type) {
+//     var el = document.getElementById("data");
+//     el.innerHTML= ""; //this clear the content in the html everytime a button is pressed. If not, the press of a button would add data to the page forever and never erase data.
+//     getData(type, function(data){
+//         data = data.results; //where data.results come from
+//         var tableHeaders = getTableHeaders(data[0]);
+        
+//         data.forEach(function(item){
+//             Object.keys(item).forEach(function(key) {
+//                 console.log(key);
+//             });
+//             //el.innerHTML += "<p>"+ item.name + "</p>"; //item is the object - .name is a property of the object - object.property = "value". value comes from
+
+//         })
+//         el.innerHTML = `<table>${tableHeaders}</table>`;
+//     })
+// }
+
+
+
+
+
+
+
+// // showing the keys and values on the html page Part 2. This shows  the Keys and values in table format. But the formating is not perfect
+// const baseURL = "https://ci-swapi.herokuapp.com/api/";
+
+// function getData(type, cb) {
+//     var xhr = new XMLHttpRequest();
+
+//     xhr.open("GET", baseURL + type + "/");
+//     xhr.send();
+
+//     xhr.onreadystatechange = function () {
+//         if (this.readyState == 4 && this.status == 200) {
+//             cb(JSON.parse(this.responseText)); // this line is running the function because lines 69 or 77
+//         };
+//     };
+// };
+
+// function getTableHeaders(obj) {
+//     var tableHeaders = [];
+
+//     Object.keys(obj).forEach(function(key) {
+//         tableHeaders.push(`<td>${key}</td>`);
+//     });
+//     return `<tr>${tableHeaders}</tr>`;
+// }
+
+// function writeToDocument(type) {
+//     var tableRows = [];
+//     var el = document.getElementById("data");
+//     el.innerHTML= ""; //this clear the content in the html everytime a button is pressed. If not, the press of a button would add data to the page forever and never erase data.
+//     getData(type, function(data){
+//         data = data.results; //where data.results come from
+//         var tableHeaders = getTableHeaders(data[0]);
+        
+//         data.forEach(function(item){
+//             var dataRow = []
+//             Object.keys(item).forEach(function(key) {
+//                 dataRow.push(`<td>${item[key]}</td>`);            
+//             });
+//             tableRows.push(dataRow);
+//         })
+//         el.innerHTML = `<table>${tableHeaders}${tableRows}</table>`;
+//     })
+// }
+
+
+
+
+
+
+
+
+// showing the keys and values on the html page Part 2. This shows  the Keys and values in table format. With good format
 const baseURL = "https://ci-swapi.herokuapp.com/api/";
 
 function getData(type, cb) {
@@ -96,6 +232,33 @@ function getData(type, cb) {
     };
 };
 
+function getTableHeaders(obj) {
+    var tableHeaders = [];
+
+    Object.keys(obj).forEach(function(key) {
+        tableHeaders.push(`<td>${key}</td>`);
+    });
+    return `<tr>${tableHeaders}</tr>`;
+}
+
 function writeToDocument(type) {
-    getData(type, function(data){document.getElementById("data").innerHTML = data;})
+    var tableRows = [];
+    var el = document.getElementById("data");
+    el.innerHTML= ""; //this clear the content in the html everytime a button is pressed. If not, the press of a button would add data to the page forever and never erase data.
+    getData(type, function(data) {
+        data = data.results;
+        var tableHeaders = getTableHeaders(data[0]);
+
+        data.forEach(function(item) {
+            var dataRow = [];
+            Object.keys(item).forEach(function(key) {
+                var rowData = item[key].toString();
+                var truncatedData = rowData.substring(0, 15);
+                dataRow.push(`<td>${truncatedData}</td>`);
+            });
+            tableRows.push(`<tr>${dataRow}</tr>`)
+        });
+
+        el.innerHTML = `<table>${tableHeaders}${tableRows}</table>`;
+    });
 }
