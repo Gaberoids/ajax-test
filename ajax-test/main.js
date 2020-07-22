@@ -216,18 +216,71 @@
 
 
 
-// showing the keys and values on the html page Part 2. This shows  the Keys and values in table format. With good format
-const baseURL = "https://ci-swapi.herokuapp.com/api/";
+// // showing the keys and values on the html page Part 2. This shows  the Keys and values in table format. With good format
+// const baseURL = "https://ci-swapi.herokuapp.com/api/";
 
-function getData(type, cb) {
+// function getData(type, cb) {
+//     var xhr = new XMLHttpRequest();
+
+//     xhr.open("GET", baseURL + type + "/");
+//     xhr.send();
+
+//     xhr.onreadystatechange = function () {
+//         if (this.readyState == 4 && this.status == 200) {
+//             cb(JSON.parse(this.responseText)); // this line is running the function because lines 69 or 77
+//         };
+//     };
+// };
+
+// function getTableHeaders(obj) {
+//     var tableHeaders = [];
+
+//     Object.keys(obj).forEach(function(key) {
+//         tableHeaders.push(`<td>${key}</td>`);
+//     });
+//     return `<tr>${tableHeaders}</tr>`;
+// }
+
+// function writeToDocument(type) {
+//     var tableRows = [];
+//     var el = document.getElementById("data");
+//     el.innerHTML= ""; //this clear the content in the html everytime a button is pressed. If not, the press of a button would add data to the page forever and never erase data.
+//     getData(type, function(data) {
+//         data = data.results;
+//         var tableHeaders = getTableHeaders(data[0]);
+
+//         data.forEach(function(item) {
+//             var dataRow = [];
+//             Object.keys(item).forEach(function(key) {
+//                 var rowData = item[key].toString();
+//                 var truncatedData = rowData.substring(0, 15);
+//                 dataRow.push(`<td>${truncatedData}</td>`);
+//             });
+//             tableRows.push(`<tr>${dataRow}</tr>`)
+//         });
+
+//         el.innerHTML = `<table>${tableHeaders}${tableRows}</table>`;
+//     });
+// }
+
+
+
+
+
+
+
+
+// showing the keys and values on the html page Part 2. This shows  the Keys and values in table format. With good format. plus pagination
+//index.HTML changed onclick values from a key to url
+function getData(url, cb) {
     var xhr = new XMLHttpRequest();
 
-    xhr.open("GET", baseURL + type + "/");
+    xhr.open("GET", url);
     xhr.send();
 
     xhr.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-            cb(JSON.parse(this.responseText)); // this line is running the function because lines 69 or 77
+            cb(JSON.parse(this.responseText)); 
         };
     };
 };
@@ -241,24 +294,40 @@ function getTableHeaders(obj) {
     return `<tr>${tableHeaders}</tr>`;
 }
 
-function writeToDocument(type) {
+function generatePaginationButtons(next, prev) {
+    if (next && prev) {
+        return `<button onclick="writeToDocument('${prev}')">Previous</button>
+                <button onclick="writeToDocument('${next}')">Next</button>`;
+    }else if (next && !prev) {
+        return `<button onclick="writeToDocument('${next}')">Next</button>`;
+    }else if (!next && prev) {
+        return `<button onclick="writeToDocument('${prev}')">Previous</button>`;
+    }
+}
+
+function writeToDocument(url) {
     var tableRows = [];
     var el = document.getElementById("data");
-    el.innerHTML= ""; //this clear the content in the html everytime a button is pressed. If not, the press of a button would add data to the page forever and never erase data.
-    getData(type, function(data) {
+    
+    getData(url, function(data) {
+        var pagination = "";
+        if (data.next || data.previous) {
+            pagination = generatePaginationButtons(data.next, data.previous);
+        }
         data = data.results;
         var tableHeaders = getTableHeaders(data[0]);
 
         data.forEach(function(item) {
             var dataRow = [];
+
             Object.keys(item).forEach(function(key) {
                 var rowData = item[key].toString();
                 var truncatedData = rowData.substring(0, 15);
                 dataRow.push(`<td>${truncatedData}</td>`);
             });
-            tableRows.push(`<tr>${dataRow}</tr>`)
+            tableRows.push(`<tr>${dataRow}</tr>`);
         });
 
-        el.innerHTML = `<table>${tableHeaders}${tableRows}</table>`;
+        el.innerHTML = `<table>${tableHeaders}${tableRows}</table>${pagination}`;
     });
 }
